@@ -16,6 +16,7 @@ p_skirt = 50;
 // -- Kołnierz (siada na białej ramce/bezelu wokół kratki, ~18 mm szer.) --
 fb   = 5;    // szerokość kołnierza, mm
 ft   = 12;   // grubość kołnierza, mm
+f_wystaje = 6;
 
 // -- Rura --
 dd   = 150;   // ŚREDNICA WEWNĘTRZNA króćca, mm  <- zmierz swoją rurę!
@@ -53,7 +54,10 @@ module rr_foot(w, h, r, skirt=0, sw=0) {
 module outer_solid(e=0) {
     union() {
         // kołnierz
-        linear_extrude(ft) rr_foot(pw+2*fb+2*e, ph+2*fb+2*e, pr+fb+e, p_skirt);
+        difference(){
+            linear_extrude(ft) rr_foot(pw+2*fb+2*e, ph+2*fb+2*e, pr+fb+e, skirt=p_skirt, sw=0);
+            linear_extrude(f_wystaje) hull() for (x=[-1,1], y=[-1,1]) translate([x*(pw/2), -ph/2 - y*(ph/2)]) square(r=pr);
+            }
         // przejście
         translate([0,0,ft]) hull() {
             linear_extrude(0.02) rr(pw+2*wall+2*e, ph+2*wall+2*e, pr+wall+e);
