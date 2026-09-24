@@ -11,6 +11,7 @@
 pw   = 234;   // szerokość otworu kratki, mm
 ph   = 140;   // wysokość otworu kratki, mm
 pr   = 22;    // promień zaokrąglenia rogów otworu, mm
+p_skirt = 50;
 
 // -- Kołnierz (siada na białej ramce/bezelu wokół kratki, ~18 mm szer.) --
 fb   = 5;    // szerokość kołnierza, mm
@@ -38,11 +39,21 @@ module rr(w, h, r) {
         translate([x*(w/2-r), y*(h/2-r)]) circle(r=r);
 }
 
+// w, h, r — jak w rr(), ale r dotyczy tylko GÓRNYCH rogów
+// skirt — o ile profil schodzi poniżej dolnej krawędzi
+// sw    — szerokość dolnego prostokąta (0 = taka sama jak w)
+module rr_foot(w, h, r, skirt=0, sw=0) {
+    ww = (sw > 0) ? sw : w;
+    hull() {
+        for (x=[-1,1]) translate([x*(w/2-r), h/2-r]) circle(r=r);   // 2 okręgi: góra
+        translate([-ww/2, -h/2-skirt]) square([ww, 0.01]);          // 1 prostokąt: dół
+    }
+}
 // Bryła zewnętrzna, opcjonalnie rozdmuchana o `e` mm na zewnątrz
 module outer_solid(e=0) {
     union() {
         // kołnierz
-        linear_extrude(ft) rr(pw+2*fb+2*e, ph+2*fb+2*e, pr+fb+e);
+        linear_extrude(ft) rr_foot(pw+2*fb+2*e, ph+2*fb+2*e, pr+fb+e, p_skirt);
         // przejście
         translate([0,0,ft]) hull() {
             linear_extrude(0.02) rr(pw+2*wall+2*e, ph+2*wall+2*e, pr+wall+e);
