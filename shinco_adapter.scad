@@ -8,10 +8,10 @@
 /* ================= PARAMETRY ================= */
 
 // -- Otwór kratki (wewnętrzny prostokąt z zaokrąglonymi rogami) --
-pw   = 234;   // szerokość otworu kratki, mm
+pw   = 244;   // szerokość otworu kratki, mm
 ph   = 140;   // wysokość otworu kratki, mm
 pr   = 22;    // promień zaokrąglenia rogów otworu, mm
-p_skirt = 50;
+p_skirt = 60;
 
 // -- Kołnierz (siada na białej ramce/bezelu wokół kratki, ~18 mm szer.) --
 fb   = 6;    // szerokość kołnierza, mm
@@ -56,7 +56,7 @@ module outer_solid(e=0) {
         // kołnierz
         difference(){
             linear_extrude(ft) rr_foot(pw+2*fb+2*e, ph+2*fb+2*e, pr+fb+e, skirt=p_skirt, sw=0);
-            translate([0,0,-0.5]) linear_extrude(f_wystaje) hull() for (x=[-1,1], y=[-1,1]) translate([x*(pw/2), -ph/2 - y*(ph/2)]) square(r=pr);
+            translate([0,-ph/2,-0.5]) linear_extrude(f_wystaje + 0.5) square(pw, ph, center=true);
             }
         // przejście
         translate([0,0,ft]) hull() {
