@@ -1,0 +1,1 @@
+# shinco_adapter
