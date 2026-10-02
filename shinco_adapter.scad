@@ -8,9 +8,9 @@
 /* ================= PARAMETRY ================= */
 
 // -- Otwór kratki (wewnętrzny prostokąt z zaokrąglonymi rogami) --
-pw   = 245;   // szerokość otworu kratki, mm
-ph   = 140;   // wysokość otworu kratki, mm
-pr   = 22;    // promień zaokrąglenia rogów otworu, mm
+pw   = 255;   // szerokość otworu kratki, mm
+ph   = 145;   // wysokość otworu kratki, mm
+pr   = 30;    // promień zaokrąglenia rogów otworu, mm
 p_skirt = 60;
 
 // -- Kołnierz (siada na białej ramce/bezelu wokół kratki, ~18 mm szer.) --
@@ -43,10 +43,10 @@ module rr(w, h, r) {
 // w, h, r — jak w rr(), ale r dotyczy tylko GÓRNYCH rogów
 // skirt — o ile profil schodzi poniżej dolnej krawędzi
 // sw    — szerokość dolnego prostokąta (0 = taka sama jak w)
-module rr_foot(w, h, r, skirt=0, sw=0) {
+module rr_foot(w, h, r, skirt=0,wysokosc_nad_wylot=0, sw=0) {
     ww = (sw > 0) ? sw : w;
     hull() {
-        for (x=[-1,1]) translate([x*(w/2-r), h/2-r]) circle(r=r);   // 2 okręgi: góra
+        translate([-ww/2, h/2 + wysokosc_nad_wylot]) square([ww, 0.01]);   // 2 okręgi: góra
         translate([-ww/2, -h/2-skirt]) square([ww, 0.01]);          // 1 prostokąt: dół
     }
 }
@@ -55,9 +55,13 @@ module outer_solid(e=0) {
     union() {
         // kołnierz
         difference(){
-            linear_extrude(ft) rr_foot(pw+2*fb+2*e, ph+2*fb+2*e, pr+fb+e, skirt=p_skirt, sw=0);
-            translate([0,-ph/2,-0.5]) linear_extrude(f_wystaje + 0.5) square([pw, ph], center=true);
+            linear_extrude(ft) rr_foot(pw+2*fb+2*e, ph+2*fb+2*e, pr+fb+e, skirt=p_skirt,wysokosc_nad_wylot=20, sw=0);
+            union(){
+                translate([0,-ph/2,-0.5]) linear_extrude(f_wystaje + 0.5) square([pw, ph+50], center=true);
+                translate([0,-100, 2*fb]) linear_extrude(3) square([2*pw, 5], center=true);
+                translate([0, 90, 2*fb]) linear_extrude(3) square([2*pw, 5], center=true);
             }
+        }
         // przejście
         translate([0,0,ft]) hull() {
             linear_extrude(0.02) rr(pw+2*wall+2*e, ph+2*wall+2*e, pr+wall+e);
