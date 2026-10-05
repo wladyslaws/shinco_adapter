@@ -16,7 +16,7 @@ p_wysokosc_nad_wylot=33;
 
 // -- Kołnierz (siada na białej ramce/bezelu wokół kratki, ~18 mm szer.) --
 fb   = 20;    // szerokość kołnierza, mm
-ft   = 14;   // grubość kołnierza, mm
+ft   = 10;   // grubość kołnierza, mm
 f_wystaje = 4;
 
 // -- Rura --
@@ -24,8 +24,8 @@ dd   = 150;   // ŚREDNICA WEWNĘTRZNA króćca, mm  <- zmierz swoją rurę!
 sl   = 45;    // długość króćca, mm
 
 // -- Przejście --
-pd   = 85;    // długość przejścia prostokąt->okrąg, mm
-wall = 2.5;   // grubość ścianki, mm
+pd   = 30;    // długość przejścia prostokąt->okrąg, mm
+wall = 3;   // grubość ścianki, mm
 
 // -- Złącze dwóch połówek --
 jw   = 0;     // ile płyta złącza wystaje poza powłokę, mm
@@ -96,32 +96,36 @@ module outer_solid(e=0) {
                         translate([0, 103, ft - 3]) linear_extrude(4) square([2*pw, 5], center=true);
                     }
                 }
-                rr_fazowanie(pw+6, ph+6, pr, skirt=p_wystaje_ponizej_wylotu,wysokosc_nad_wylot=p_wysokosc_nad_wylot);
+                rr_fazowanie(pw+6, ph+6, pr, skirt=p_wystaje_ponizej_wylotu+6,wysokosc_nad_wylot=p_wysokosc_nad_wylot);
             }
             //heblowanie_na_gorze(pw + 100,ph/2, pr, 1.5, pr);
-            translate([0,250,-pw/2-pr+2]) rotate([90,0,0]) bryla_klimatyzatora_glowna(pw,pr);
+            translate([0,250,-pw/2-pr+1]) rotate([90,0,0]) bryla_klimatyzatora_glowna(pw,pr);
         }
         
         // przejście
         translate([0,0,ft]) hull() {
             linear_extrude(0.02) rr(pw+2*wall+2*e, ph+2*wall+2*e, pr+wall+e);
-            translate([0,0,pd]) linear_extrude(0.02) circle(d=dd+2*wall+2*e);
+            translate([0,0,pd]) linear_extrude(0.02) square([163,143],center=true);
         }
+        translate([0,0,pd+ft+15-2]) linear_extrude(2) square([166,72],center=true);
         // króciec + rowek pod opaskę
-        translate([0,0,ft+pd-0.01]) cylinder(h=sl+0.01, d=dd+2*wall+2*e);
-        translate([0,0,ft+pd+sl*0.55]) cylinder(h=4, d=dd+2*wall+3+2*e);
+        translate([0,0,ft+pd-0.01]) linear_extrude(15) rr(163,143,4);
+        //translate([0,0,ft+pd+sl*0.55]) cylinder(h=4, d=dd+2*wall+3+2*e);
     }
 }
 
 // Kanał powietrza (do odjęcia)
 module inner_void() {
     union() {
+        
+        translate([0,0,ft+pd-40-0.01]) linear_extrude(65) rr(156,136,10);
+        
         translate([0,0,-1]) linear_extrude(ft+1.01) rr(pw, ph, pr);
         translate([0,0,ft]) hull() {
             linear_extrude(0.02) rr(pw, ph, pr);
-            translate([0,0,pd]) linear_extrude(0.02) circle(d=dd);
+            translate([0,0,pd]) linear_extrude(0.02) rr(156,136,10);
         }
-        translate([0,0,ft+pd-0.01]) cylinder(h=sl+2, d=dd);
+        //translate([0,0,ft+pd-0.01]) cylinder(h=sl+2, d=dd);
     }
 }
 
@@ -160,7 +164,7 @@ module half(side) {
             }
             joint_plate(side);
         }
-        screw_holes();
+        //screw_holes();
     }
 }
 
