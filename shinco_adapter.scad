@@ -12,7 +12,7 @@ pw   = 246;   // szerokość otworu kratki, mm
 ph   = 145;   // wysokość otworu kratki, mm
 pr   = 30;    // promień zaokrąglenia rogów otworu, mm
 p_wystaje_ponizej_wylotu = 60;
-p_wysokosc_nad_wylot=33;
+p_wysokosc_nad_wylot=23;
 
 // -- Kołnierz (siada na białej ramce/bezelu wokół kratki, ~18 mm szer.) --
 fb   = 20;    // szerokość kołnierza, mm
@@ -107,7 +107,7 @@ module outer_solid(e=0) {
             linear_extrude(0.02) rr(pw+2*wall+2*e, ph+2*wall+2*e, pr+wall+e);
             translate([0,0,pd]) linear_extrude(0.02) square([163,143],center=true);
         }
-        translate([0,0,pd+ft+15-2]) linear_extrude(2) square([166,72],center=true);
+        translate([0,0,pd+ft+15-3]) linear_extrude(3) square([170,72],center=true);
         // króciec + rowek pod opaskę
         translate([0,0,ft+pd-0.01]) linear_extrude(15) rr(163,143,4);
         //translate([0,0,ft+pd+sl*0.55]) cylinder(h=4, d=dd+2*wall+3+2*e);
